@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CIRCUITO - CONEXIONES</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos para las tablas de conexiones */
+        .pinout-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .pinout-table th {
+            background-color: #0078D7;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .pinout-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+        }
+        .pinout-table tr:last-child td {
+            border-bottom: none;
+        }
+        .pinout-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .highlight-pin {
+            font-family: monospace;
+            background-color: #e8f4fd;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #0078D7;
+        }
+        .circuit-explanation {
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+    <header class="main-header">
+        <div class="header-content">
+            <img src="img/LOGO2.png" alt="TermosenseLogo" class="header-logo">
+            <h1 class="site-title">INGENIERÍA ELECTRÓNICA</h1>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Inicio</a>
+                <a href="dispositivos.html" class="nav-link">Dispositivos</a>
+                <a href="circuito.html" class="nav-link active">Circuito</a>
+                <a href="codificacion.html" class="nav-link">Codificación</a>
+                <a href="analisis.html" class="nav-link">Análisis</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        
+        <section class="card">
+            <h2>Arquitectura de Conexiones (Pinout)</h2>
+            <p>Para garantizar una comunicación estable y evitar colisiones de datos en el bus SPI, el hardware está dividido en dos segmentos lógicos: SPI por Hardware (para alta velocidad) y SPI por Software (para el sensor).</p>
+            
+            <div class="circuit-explanation">
+                <strong>Diseño del Circuito:</strong> Separamos físicamente el módulo de la tarjeta SD del sensor MAX6675. La memoria SD utiliza los pines dedicados del Arduino Nano para máxima velocidad de escritura, mientras que el sensor de temperatura utiliza pines digitales genéricos gracias a nuestra librería personalizada.
+            </div>
+
+            <h3 style="margin-top: 25px; color: #333;">Conexión: Arduino Nano ➔ Módulo MicroSD</h3>
+            <table class="pinout-table">
+                <thead>
+                    <tr>
+                        <th>Pin Arduino Nano</th>
+                        <th>Pin Módulo MicroSD</th>
+                        <th>Función</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="highlight-pin">5V</span></td><td>VCC</td><td>Alimentación (Energía)</td></tr>
+                    <tr><td><span class="highlight-pin">GND</span></td><td>GND</td><td>Tierra común</td></tr>
+                    <tr><td><span class="highlight-pin">D11</span></td><td>MOSI</td><td>SPI Hardware: Envío de datos a la SD</td></tr>
+                    <tr><td><span class="highlight-pin">D12</span></td><td>MISO</td><td>SPI Hardware: Recepción de datos</td></tr>
+                    <tr><td><span class="highlight-pin">D13</span></td><td>SCK</td><td>SPI Hardware: Reloj de sincronización</td></tr>
+                    <tr><td><span class="highlight-pin">A5 / D19</span></td><td>CS</td><td>Chip Select (Activación de la memoria)</td></tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 20px; color: #333;">Conexión: Arduino Nano ➔ Sensor MAX6675</h3>
+            <table class="pinout-table">
+                <thead>
+                    <tr>
+                        <th>Pin Arduino Nano</th>
+                        <th>Pin Módulo MAX6675</th>
+                        <th>Función</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="highlight-pin">5V</span></td><td>VCC</td><td>Alimentación</td></tr>
+                    <tr><td><span class="highlight-pin">GND</span></td><td>GND</td><td>Tierra común</td></tr>
+                    <tr><td><span class="highlight-pin">D3</span></td><td>SO / DO</td><td>SPI Software: Salida de datos del sensor</td></tr>
+                    <tr><td><span class="highlight-pin">D10</span></td><td>CS</td><td>Chip Select (Activación del sensor)</td></tr>
+                    <tr><td><span class="highlight-pin">D2</span></td><td>SCK / CLK</td><td>SPI Software: Reloj de lectura lenta</td></tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 30px; color: #0078D7;">Diagrama Fritzing</h3>
+            <div class="img-container-tech">
+                <img src="img/diagrama_conexiones.png" alt="Diagrama Fritzing" style="max-width: 100%; border-radius: 8px;">
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Montaje Real Final</h2>
+            <div class="img-container-tech" style="border-color: var(--accent-success);">
+                <img src="img/montaje.jpeg" alt="Foto del proyecto" style="width: 100%; border-radius: 8px;">
+            </div>
+            <p style="margin-top: 15px; font-size: 0.95rem; line-height: 1.5; color: #555;">
+                Vista del prototipo operando en entorno controlado. En esta fase, los componentes están integrados en una protoboard para facilitar el análisis de señales y la calibración del código antes de pasar a la fase de soldadura en placa PCB.
+            </p>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggle = document.getElementById('mobile-menu');
+            const navMenu = document.getElementById('nav-menu');
+            
+            if(menuToggle && navMenu) {
+                menuToggle.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

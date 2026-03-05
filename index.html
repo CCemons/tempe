@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONITOR - MAX6675</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/LOGUITO.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .inicio-wrap {
+            max-width: 860px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .zona-carga {
+            border: 2px dashed #2563eb;
+            border-radius: 14px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(37,99,235,0.03);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .zona-carga:hover { background: rgba(37,99,235,0.07); transform: translateY(-2px); }
+        .zona-carga input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .zona-carga .icono { font-size: 3rem; display: block; margin-bottom: 0.75rem; }
+        .zona-carga .titulo { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700; color: #2563eb; letter-spacing: 1px; }
+        .zona-carga .sub { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #64748b; margin-top: 0.4rem; }
+        #panelDatos { display: none; }
+        .temp-grande { font-family: 'Orbitron', sans-serif; font-size: clamp(3.5rem, 12vw, 5.5rem); font-weight: 700; color: #2563eb; text-align: center; margin: 0.5rem 0 0.2rem; line-height: 1; }
+        .estado-texto { display: block; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 0.4rem 1.2rem; border-radius: 20px; background: #f0f4f8; border: 1px solid rgba(15,23,42,0.1); width: fit-content; margin: 0 auto 0.3rem; }
+        .ultima-hora { display: block; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: #64748b; margin-bottom: 1.25rem; }
+        .grafica-wrap { background: #f0f4f8; border: 1px dashed rgba(15,23,42,0.1); border-radius: 12px; padding: 12px; margin-bottom: 1.25rem; }
+        #grafica { display: block; width: 100% !important; height: 220px; }
+        .chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+        .chip { background: #f0f4f8; border: 1px solid rgba(15,23,42,0.1); border-radius: 10px; padding: 0.75rem 0.4rem; text-align: center; }
+        .chip-label { font-size: 0.62rem; color: #64748b; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+        .chip-val { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700; margin-top: 4px; display: block; }
+        .botones-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .titulo-dia { font-family: 'Orbitron', sans-serif; font-size: 0.78rem; color: #64748b; }
+        .btn-analisis { display: inline-flex; align-items: center; gap: 8px; background: #2563eb; color: #fff; text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; padding: 0.7rem 1.4rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: all 0.2s; }
+        .btn-analisis:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-cambiar { background: none; border: 1px solid rgba(15,23,42,0.15); color: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; padding: 0.38rem 0.9rem; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .btn-cambiar:hover { border-color: #2563eb; color: #2563eb; }
+        @media (max-width: 580px) { .chips { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="img/LOGO2.png" alt="TermosenseLogo" class="header-logo">
+                <h1 class="site-title">TERMOMETRÍA INDUSTRIAL</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="inicio.html"       class="nav-link">Inicio</a>
+                <a href="dispositivos.html" class="nav-link">Dispositivos</a>
+                <a href="circuito.html"     class="nav-link">Circuito</a>
+                <a href="codificacion.html" class="nav-link">Codificación</a>
+                <a href="analisis.html"     class="nav-link">Análisis</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="inicio-wrap">
+
+        <div class="card" id="zonaSubida">
+            <h2 style="margin-bottom:0.3rem;">Cargar datos del Arduino</h2>
+            <p style="font-size:0.8rem;color:#64748b;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;">Sube tu archivo DATOS.CSV para visualizar el historial de mediciones</p>
+            <div class="zona-carga" id="dropZona">
+                <input type="file" id="inputCSV" accept=".csv,.txt">
+                <span class="icono">📂</span>
+                <p class="titulo">SELECCIONAR DATOS.CSV</p>
+                <p class="sub">Clic aquí o arrastra el archivo · se recordará al navegar</p>
+            </div>
+        </div>
+
+        <div class="card" id="panelDatos">
+            <div class="botones-row">
+                <div>
+                    <h2 style="margin-bottom:3px;">Resumen del Día</h2>
+                    <span class="titulo-dia" id="lblDia"></span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <button class="btn-cambiar" id="btnCambiar">⟳ Cambiar CSV</button>
+                    <a href="analisis.html" class="btn-analisis">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        VER ANÁLISIS COMPLETO
+                    </a>
+                </div>
+            </div>
+
+            <div id="lblTemp" class="temp-grande">-- °C</div>
+            <span id="lblEstado" class="estado-texto">—</span>
+            <span id="lblHora" class="ultima-hora"></span>
+
+            <div class="grafica-wrap">
+                <canvas id="grafica"></canvas>
+            </div>
+
+            <div class="chips">
+                <div class="chip">
+                    <div class="chip-label">Máxima</div>
+                    <span class="chip-val" id="lblMax" style="color:#dc2626;">--</span>
+                </div>
+                <div class="chip">
+                    <div class="chip-label">Mínima</div>
+                    <span class="chip-val" id="lblMin" style="color:#059669;">--</span>
+                </div>
+                <div class="chip">
+                    <div class="chip-label">Promedio</div>
+                    <span class="chip-val" id="lblProm" style="color:#2563eb;">--</span>
+                </div>
+                <div class="chip">
+                    <div class="chip-label">Mediciones</div>
+                    <span class="chip-val" id="lblN" style="color:#1e293b;">--</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="csv-store.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

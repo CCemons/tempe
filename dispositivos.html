@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISPOSITIVOS - HARDWARE E INVENTARIO</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .page-wrap {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ===== INTRO BANNER ===== */
+        .intro-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #1e3a5f 100%);
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .intro-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37,99,235,0.07) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .intro-banner-inner { position: relative; z-index: 1; }
+        .intro-badge {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4);
+            color: #93c5fd; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 0.3rem 0.8rem;
+            border-radius: 20px; margin-bottom: 0.9rem;
+        }
+        .intro-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            font-weight: 700; color: #fff; margin-bottom: 0.75rem;
+        }
+        .intro-title span { color: #3b82f6; }
+        .intro-desc { font-size: 0.9rem; color: #94a3b8; max-width: 680px; line-height: 1.75; }
+
+        /* ===== SECCION HEADER ===== */
+        .seccion-titulo {
+            font-family: 'Orbitron', sans-serif; font-size: 0.68rem;
+            color: #2563eb; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 0.35rem;
+        }
+        .seccion-h2 {
+            font-family: 'Orbitron', sans-serif; font-size: 1.15rem;
+            font-weight: 700; color: #1e293b; margin-bottom: 1.5rem;
+        }
+
+        /* ===== COMPONENT CARDS ===== */
+        .comp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .comp-card {
+            background: #ffffff;
+            border: 1px solid rgba(15,23,42,0.09);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 1.5rem;
+            align-items: start;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .comp-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--accent, #2563eb);
+            border-radius: 4px 0 0 4px;
+        }
+        .comp-card:hover {
+            border-color: rgba(37,99,235,0.25);
+            box-shadow: 0 8px 28px rgba(37,99,235,0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Imagen */
+        .comp-img-wrap {
+            background: #f8fafc;
+            border: 1px solid rgba(15,23,42,0.07);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 110px;
+        }
+        .comp-img-wrap img {
+            max-width: 100%; max-height: 85px;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+        .comp-card:hover .comp-img-wrap img { transform: scale(1.07); }
+
+        /* Info */
+        .comp-info { flex: 1; }
+        .comp-header {
+            display: flex; align-items: center;
+            gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem;
+        }
+        .comp-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem; font-weight: 700; color: #1e293b;
+        }
+        .comp-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem; font-weight: 700;
+            background: rgba(37,99,235,0.08); color: #2563eb;
+            padding: 0.15rem 0.55rem; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .comp-desc {
+            font-size: 0.82rem; color: #475569;
+            line-height: 1.7; margin-bottom: 0.9rem;
+        }
+
+        /* Specs chips */
+        .specs {
+            display: flex; flex-wrap: wrap; gap: 0.45rem;
+        }
+        .spec {
+            background: #f1f5f9;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 8px;
+            padding: 0.25rem 0.65rem;
+            display: flex; flex-direction: column;
+            align-items: center;
+        }
+        .spec-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem; color: #94a3b8;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .spec-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; font-weight: 700; color: #1e293b;
+        }
+
+        /* Botón datasheet */
+        .btn-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            min-width: 130px;
+        }
+        .btn-datasheet {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: #2563eb; color: #fff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.8px; text-transform: uppercase;
+            padding: 0.6rem 1rem; border-radius: 9px;
+            box-shadow: 0 3px 10px rgba(37,99,235,0.3);
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-datasheet:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(37,99,235,0.35); }
+        .btn-datasheet svg { flex-shrink: 0; }
+
+        .comp-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem; font-weight: 700;
+            color: rgba(37,99,235,0.07);
+            line-height: 1; text-align: right;
+        }
+
+        /* ===== RESUMEN ===== */
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+        }
+        .resumen-item {
+            background: #f8fafc;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .resumen-icon { font-size: 1.5rem; display: block; margin-bottom: 0.4rem; }
+        .resumen-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem; font-weight: 700; color: #1e293b;
+        }
+        .resumen-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+
+        @media (max-width: 700px) {
+            .comp-card {
+                grid-template-columns: 90px 1fr;
+                grid-template-rows: auto auto;
+            }
+            .btn-wrap {
+                grid-column: 1 / -1;
+                flex-direction: row; align-items: center;
+                justify-content: flex-start;
+            }
+            .comp-num { display: none; }
+        }
+        @media (max-width: 480px) {
+            .comp-card { grid-template-columns: 1fr; }
+            .comp-img-wrap { height: 90px; width: 90px; margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <img src="img/LOGO2.png" alt="TermosenseLogo" class="header-logo">
+            <h1 class="site-title">HARDWARE E INVENTARIO</h1>
+            <nav class="main-nav">
+                <a href="inicio.html"       class="nav-link">Inicio</a>
+                <a href="dispositivos.html" class="nav-link active">Dispositivos</a>
+                <a href="circuito.html"     class="nav-link">Circuito</a>
+                <a href="codificacion.html" class="nav-link">Codificación</a>
+                <a href="analisis.html"     class="nav-link">Análisis</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- BANNER INTRO -->
+        <div class="intro-banner">
+            <div class="intro-banner-inner">
+                <div class="intro-badge">6 componentes · Hardware verificado</div>
+                <h1 class="intro-title">Hardware del <span>Sistema</span></h1>
+                <p class="intro-desc">
+                    Cada componente fue seleccionado para lograr el mejor equilibrio entre precisión de medición, consumo energético y facilidad de ensamblaje. Haz clic en <strong style="color:#93c5fd;">Ver Datasheet</strong> para acceder a las especificaciones técnicas oficiales de cada pieza.
+                </p>
+            </div>
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="card">
+            <p class="seccion-titulo">Resumen del sistema</p>
+            <h2 class="seccion-h2">Inventario de componentes</h2>
+            <div class="resumen-grid">
+                <div class="resumen-item">
+                    <span class="resumen-icon">⚡</span>
+                    <div class="resumen-val">Arduino</div>
+                    <div class="resumen-label">Nano · Control</div>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-icon">🔌</span>
+                    <div class="resumen-val">MAX6675</div>
+                    <div class="resumen-label">ADC 12-bit</div>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-icon">🌡️</span>
+                    <div class="resumen-val">Tipo K</div>
+                    <div class="resumen-label">Termocupla</div>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-icon">💾</span>
+                    <div class="resumen-val">Módulo SD</div>
+                    <div class="resumen-label">Lector SPI</div>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-icon">🗂️</span>
+                    <div class="resumen-val">MicroSD</div>
+                    <div class="resumen-label">FAT32 · CSV</div>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-icon">🧱</span>
+                    <div class="resumen-val">Protoboard</div>
+                    <div class="resumen-label">830 puntos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTADO DETALLADO -->
+        <div class="card">
+            <p class="seccion-titulo">Especificaciones</p>
+            <h2 class="seccion-h2">Detalle técnico por componente</h2>
+
+            <div class="comp-list">
+
+                <!-- 1. Arduino Nano -->
+                <div class="comp-card" style="--accent:#2563eb;">
+                    <div class="comp-img-wrap">
+                        <img src="img/arduino_nano.png" alt="Arduino Nano">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Arduino Nano</span>
+                            <span class="comp-role">Unidad de control</span>
+                        </div>
+                        <p class="comp-desc">
+                            Microcontrolador basado en el chip <strong>ATmega328P</strong>. Es el cerebro del sistema: ejecuta el firmware, coordina la comunicación SPI con el sensor MAX6675 y el módulo SD, y gestiona el registro periódico de datos. Su formato compacto lo hace ideal para prototipos.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">MCU</span><span class="spec-val">ATmega328P</span></div>
+                            <div class="spec"><span class="spec-label">Velocidad</span><span class="spec-val">16 MHz</span></div>
+                            <div class="spec"><span class="spec-label">Flash</span><span class="spec-val">32 KB</span></div>
+                            <div class="spec"><span class="spec-label">RAM</span><span class="spec-val">2 KB</span></div>
+                            <div class="spec"><span class="spec-label">Digital I/O</span><span class="spec-val">22 pines</span></div>
+                            <div class="spec"><span class="spec-label">Voltaje</span><span class="spec-val">5V / 3.3V</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">01</div>
+                        <a href="https://docs.arduino.cc/resources/datasheets/A000005-datasheet.pdf" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. MAX6675 -->
+                <div class="comp-card" style="--accent:#059669;">
+                    <div class="comp-img-wrap">
+                        <img src="img/sensor_max.png" alt="Módulo MAX6675">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Módulo MAX6675</span>
+                            <span class="comp-role">Digitalizador térmico</span>
+                        </div>
+                        <p class="comp-desc">
+                            Circuito integrado especializado que amplifica la señal de microvoltios de la termocupla tipo K y la convierte en un valor digital de <strong>12 bits</strong> a través del protocolo SPI. Incluye compensación de junta fría integrada para mayor precisión sin calibración manual.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">Resolución</span><span class="spec-val">12 bits</span></div>
+                            <div class="spec"><span class="spec-label">Precisión</span><span class="spec-val">±0.25 °C</span></div>
+                            <div class="spec"><span class="spec-label">Rango</span><span class="spec-val">0 – 1024 °C</span></div>
+                            <div class="spec"><span class="spec-label">Protocolo</span><span class="spec-val">SPI</span></div>
+                            <div class="spec"><span class="spec-label">Voltaje</span><span class="spec-val">3.3V – 5V</span></div>
+                            <div class="spec"><span class="spec-label">Comp. fría</span><span class="spec-val">Integrada</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">02</div>
+                        <a href="https://www.analog.com/media/en/technical-documentation/data-sheets/max6675.pdf" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Termocupla Tipo K -->
+                <div class="comp-card" style="--accent:#dc2626;">
+                    <div class="comp-img-wrap">
+                        <img src="img/termocupla.png" alt="Termocupla Tipo K">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Termocupla Tipo K</span>
+                            <span class="comp-role">Sensor de temperatura</span>
+                        </div>
+                        <p class="comp-desc">
+                            Sonda de medición industrial fabricada en acero inoxidable. Funciona por el <strong>efecto Seebeck</strong>: dos metales distintos (Níquel-Cromo y Níquel-Aluminio) generan una diferencia de voltaje proporcional a la temperatura aplicada en su punta. Apta para entornos de alta temperatura.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">Tipo</span><span class="spec-val">K (NiCr-NiAl)</span></div>
+                            <div class="spec"><span class="spec-label">Rango</span><span class="spec-val">-200 – 1260°C</span></div>
+                            <div class="spec"><span class="spec-label">Sensibilidad</span><span class="spec-val">~41 µV/°C</span></div>
+                            <div class="spec"><span class="spec-label">Material</span><span class="spec-val">Acero inox.</span></div>
+                            <div class="spec"><span class="spec-label">Salida</span><span class="spec-val">Analógica µV</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">03</div>
+                        <a href="https://docs.rs-online.com/ce8f/A700000007389435.pdf" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Módulo SD -->
+                <div class="comp-card" style="--accent:#d97706;">
+                    <div class="comp-img-wrap">
+                        <img src="img/modulo_sd.png" alt="Módulo SD">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Módulo Lector SD</span>
+                            <span class="comp-role">Almacenamiento físico</span>
+                        </div>
+                        <p class="comp-desc">
+                            Módulo que permite al Arduino leer y escribir datos en una tarjeta MicroSD mediante el protocolo <strong>SPI</strong>. Incluye regulador de voltaje y conversores de nivel lógico integrados para compatibilidad con 5V. Ideal para data loggers ya que guarda los datos de forma persistente sin depender de conexión a PC.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">Protocolo</span><span class="spec-val">SPI</span></div>
+                            <div class="spec"><span class="spec-label">Voltaje</span><span class="spec-val">3.3V – 5V</span></div>
+                            <div class="spec"><span class="spec-label">Formato</span><span class="spec-val">FAT16 / FAT32</span></div>
+                            <div class="spec"><span class="spec-label">Capacidad</span><span class="spec-val">Hasta 32 GB</span></div>
+                            <div class="spec"><span class="spec-label">Conector</span><span class="spec-val">MicroSD</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">04</div>
+                        <a href="https://agelectronica.lat/pdfs/textos/O/OKY3002-2.PDF" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 5. Memoria MicroSD -->
+                <div class="comp-card" style="--accent:#7c3aed;">
+                    <div class="comp-img-wrap">
+                        <img src="img/microsd.png" alt="Memoria MicroSD">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Memoria MicroSD</span>
+                            <span class="comp-role">Almacenamiento CSV</span>
+                        </div>
+                        <p class="comp-desc">
+                            Tarjeta de memoria flash donde se almacena físicamente la base de datos del sistema en formato <strong>CSV</strong>. Formateada en FAT32 para que la librería SD de Arduino pueda crear y escribir archivos. Cada línea del CSV contiene fecha, hora y temperatura registrada.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">Formato</span><span class="spec-val">FAT32</span></div>
+                            <div class="spec"><span class="spec-label">Capacidad</span><span class="spec-val">8 – 32 GB</span></div>
+                            <div class="spec"><span class="spec-label">Clase</span><span class="spec-val">Class 10</span></div>
+                            <div class="spec"><span class="spec-label">Lectura</span><span class="spec-val">80 MB/s</span></div>
+                            <div class="spec"><span class="spec-label">Archivo</span><span class="spec-val">DATOS.CSV</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">05</div>
+                        <a href="https://www.kingston.com/datasheets/SDCIT-specsheet-8gb-32gb_latam.pdf" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 6. Protoboard -->
+                <div class="comp-card" style="--accent:#64748b;">
+                    <div class="comp-img-wrap">
+                        <img src="img/protoboard.png" alt="Protoboard">
+                    </div>
+                    <div class="comp-info">
+                        <div class="comp-header">
+                            <span class="comp-name">Protoboard</span>
+                            <span class="comp-role">Base de ensamblaje</span>
+                        </div>
+                        <p class="comp-desc">
+                            Placa de pruebas sin soldadura que permite conectar y reconfigurar los componentes de forma rápida durante la fase de prototipado. Sus filas y columnas de contactos están eléctricamente conectadas internamente, facilitando el tendido del cableado entre el Arduino, el módulo MAX6675 y el lector SD.
+                        </p>
+                        <div class="specs">
+                            <div class="spec"><span class="spec-label">Puntos</span><span class="spec-val">830</span></div>
+                            <div class="spec"><span class="spec-label">Corriente</span><span class="spec-val">Hasta 5A</span></div>
+                            <div class="spec"><span class="spec-label">Voltaje</span><span class="spec-val">Hasta 300V</span></div>
+                            <div class="spec"><span class="spec-label">Paso</span><span class="spec-val">2.54 mm</span></div>
+                            <div class="spec"><span class="spec-label">Soldadura</span><span class="spec-val">No requerida</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-wrap">
+                        <div class="comp-num">06</div>
+                        <a href="https://agelectronica.lat/pdfs/textos/O/OKY0005.PDF" target="_blank" class="btn-datasheet">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Ver Datasheet
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div><!-- /page-wrap -->
+</body>
+</html>

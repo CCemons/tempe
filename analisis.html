@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANÁLISIS DE DATOS - DASHBOARD</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Drop zone */
+        .drop-zone {
+            border: 2px dashed #2563eb;
+            border-radius: 14px;
+            padding: 1.75rem 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(37,99,235,0.03);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .drop-zone:hover { background: rgba(37,99,235,0.07); }
+        .drop-zone input {
+            position: absolute; inset: 0;
+            opacity: 0; cursor: pointer;
+            width: 100%; height: 100%;
+        }
+        .dz-icon  { font-size: 2rem; display: block; margin-bottom: 0.3rem; }
+        .dz-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem; font-weight: 700;
+            color: #2563eb; letter-spacing: 1px;
+        }
+        .dz-sub {
+            font-size: 0.75rem; color: #64748b; margin-top: 0.2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        #lblArchivo {
+            display: inline-block; margin-top: 0.4rem;
+            font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;
+            color: #059669; font-weight: 700;
+        }
+
+        /* Modo compacto tras cargar */
+        .drop-zone.compacto {
+            padding: 0.6rem 1rem;
+            display: flex; align-items: center; gap: 10px;
+            text-align: left; border-width: 1px;
+        }
+        .drop-zone.compacto .dz-icon { font-size: 1.2rem; margin: 0; }
+
+        /* hint csv */
+        .csv-hint {
+            background: #1e293b; border-radius: 8px;
+            padding: 0.75rem 1rem; margin-top: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem; color: #94a3b8; line-height: 1.7;
+        }
+        .csv-hint .cf { color: #38bdf8; }
+        .csv-hint .cv { color: #86efac; }
+
+        /* Empty state */
+        #estadoVacio { text-align: center; padding: 3rem 1rem; }
+        #estadoVacio .ev-icon { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 0.75rem; }
+        #estadoVacio p { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #64748b; }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            background: rgba(37,99,235,0.1); color: #2563eb;
+            border-radius: 20px; padding: 0.1rem 0.65rem;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+            font-weight: 700; margin-left: 0.5rem; vertical-align: middle;
+        }
+
+        /* Canvas */
+        #graficaHistorica {
+            display: block; width: 100% !important; height: 300px; border-radius: 8px;
+        }
+
+        /* Select filtro */
+        #filtroTiempo {
+            background: #fff; border: 1px solid rgba(15,23,42,0.1);
+            padding: 6px 10px; border-radius: 8px; color: #1e293b;
+            cursor: pointer; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* Rango fechas */
+        #rangoFechas {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem; color: #64748b; margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <img src="img/LOGO2.png" alt="TermosenseLogo" class="header-logo">
+            <h1 class="site-title">DATA ANALYTICS</h1>
+            <nav class="main-nav">
+                <a href="index.html"        class="nav-link">Inicio</a>
+                <a href="dispositivos.html" class="nav-link">Dispositivos</a>
+                <a href="circuito.html"     class="nav-link">Circuito</a>
+                <a href="codificacion.html" class="nav-link">Codificación</a>
+                <a href="analisis.html"     class="nav-link active">Análisis</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+
+        <section class="main-content">
+
+            <!-- 1. Zona carga -->
+            <div class="card" id="seccionCarga">
+                <h2 style="margin-bottom:0.75rem;">Datos del Arduino</h2>
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="inputCSV" accept=".csv,.txt">
+                    <span class="dz-icon">📂</span>
+                    <div>
+                        <p class="dz-title">SELECCIONAR / CAMBIAR CSV</p>
+                        <p class="dz-sub">Clic aquí o arrastra el archivo</p>
+                        <span id="lblArchivo">Ningún archivo seleccionado</span>
+                    </div>
+                </div>
+                <div class="csv-hint" id="hintCSV">
+                    <strong style="color:#e2e8f0;">Formato:</strong><br>
+                    <span class="cf">Fecha</span>,<span class="cf">Hora</span>,<span class="cv">Temperatura(C)</span><br>
+                    <span class="cf">26/2/2026</span>,<span class="cf">15:41:17</span>,<span class="cv">22.75</span>
+                </div>
+            </div>
+
+            <!-- 2. Gráfica (oculta) -->
+            <div class="card" id="seccionGrafica" style="display:none;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+                    <div>
+                        <h2>Histórico de Temperatura <span class="badge" id="lblTotal">0</span></h2>
+                        <div id="rangoFechas"></div>
+                    </div>
+                    <select id="filtroTiempo"><option value="todo">Todos los días</option></select>
+                </div>
+                <canvas id="graficaHistorica"></canvas>
+            </div>
+
+            <!-- 3. Tabla (oculta) -->
+            <div class="card" id="seccionTabla" style="display:none;">
+                <h3>Últimas 25 mediciones del filtro activo</h3>
+                <div style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Fecha / Hora</th><th>Temperatura</th><th>Estado</th></tr>
+                        </thead>
+                        <tbody id="cuerpoTabla"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. Estado vacío -->
+            <div class="card" id="seccionVacio">
+                <div id="estadoVacio">
+                    <span class="ev-icon">📊</span>
+                    <p>Carga tu archivo <strong>DATOS.CSV</strong><br>o navega desde Inicio si ya lo subiste</p>
+                </div>
+            </div>
+
+        </section>
+
+        <aside class="stats-sidebar">
+            <div class="card-mini" style="border-left:4px solid #dc2626;">
+                <h3>Temperatura Máxima</h3>
+                <p id="sMax" style="font-size:1.4rem;font-family:'Orbitron';color:#dc2626;">-- °C</p>
+                <span style="font-size:0.7rem;color:#64748b;">Pico registrado</span>
+            </div>
+            <div class="card-mini" style="border-left:4px solid #059669;">
+                <h3>Temperatura Mínima</h3>
+                <p id="sMin" style="font-size:1.4rem;font-family:'Orbitron';color:#059669;">-- °C</p>
+                <span style="font-size:0.7rem;color:#64748b;">Punto más bajo</span>
+            </div>
+            <div class="card-mini" style="border-left:4px solid #2563eb;">
+                <h3>Promedio General</h3>
+                <p id="sProm" style="font-size:1.4rem;font-family:'Orbitron';color:#2563eb;">-- °C</p>
+                <span style="font-size:0.7rem;color:#64748b;">Media aritmética</span>
+            </div>
+            <div class="card-mini">
+                <h3>Total Registros</h3>
+                <p id="sN" style="font-family:'Orbitron';font-size:1.1rem;color:#2563eb;">--</p>
+                <span style="font-size:0.7rem;color:#64748b;">Filtro activo</span>
+            </div>
+            <div class="card-mini">
+                <h3>Precisión Sensor</h3>
+                <p style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:#64748b;">
+                    MAX6675<br><strong style="color:#1e293b;">± 0.25 °C</strong>
+                </p>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="csv-store.js"></script>
+    <script src="script-analisis.js"></script>
+</body>
+</html>

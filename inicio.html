@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMOSENSE - INICIO</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/LOGUITO.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <style>
+
+        .page-wrap {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #1e3a5f 100%);
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(37,99,235,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37,99,235,0.08) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(37,99,235,0.22) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-inner { position: relative; z-index: 1; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(37,99,235,0.2);
+            border: 1px solid rgba(37,99,235,0.4);
+            color: #93c5fd;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            margin-bottom: 1.2rem;
+        }
+        .hero-badge::before {
+            content: '●';
+            color: #3b82f6;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.7rem, 4vw, 2.9rem);
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+        }
+        .hero-title span { color: #3b82f6; }
+
+        .hero-desc {
+            font-size: 1rem;
+            color: #94a3b8;
+            max-width: 640px;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .hstat-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .hstat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 0.85rem 1.75rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(37,99,235,0.4);
+            transition: all 0.2s;
+        }
+        .hero-cta:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        /* ===== SECCIONES ===== */
+        .seccion-titulo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            color: #2563eb;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+        .seccion-h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== PASOS ===== */
+        .pasos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 1rem;
+        }
+        .paso {
+            background: #f8fafc;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 14px;
+            padding: 1.2rem 1rem;
+            position: relative;
+            transition: all 0.25s;
+        }
+        .paso:hover {
+            border-color: rgba(37,99,235,0.3);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.08);
+            transform: translateY(-3px);
+        }
+        .paso-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: rgba(37,99,235,0.1);
+            line-height: 1;
+            position: absolute;
+            top: 10px; right: 12px;
+        }
+        .paso-icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
+        .paso h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        .paso p { font-size: 0.78rem; color: #64748b; line-height: 1.65; }
+
+        /* ===== FLUJO ===== */
+        .flujo {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0;
+        }
+        .flujo-item {
+            background: #f8fafc;
+            border: 1.5px solid rgba(15,23,42,0.1);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+            max-width: 140px;
+        }
+        .flujo-item-icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
+        .flujo-item-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .flujo-item-desc { font-size: 0.68rem; color: #64748b; margin-top: 3px; }
+        .flujo-arrow { font-size: 1rem; color: #2563eb; padding: 0 0.3rem; flex-shrink: 0; font-weight: 700; }
+
+        /* ===== PINES SPI ===== */
+        .spi-wrap {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.2rem 1.4rem;
+            margin-top: 1.25rem;
+        }
+        .spi-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .spi-pins { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .spi-pin {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 0.5rem 0.85rem;
+            text-align: center;
+        }
+        .spi-pin-name { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; display: block; }
+        .spi-pin-desc { font-size: 0.62rem; color: #64748b; }
+        .pin-sclk { color: #fbbf24; }
+        .pin-cs   { color: #f87171; }
+        .pin-so   { color: #34d399; }
+        .pin-vcc  { color: #f87171; }
+        .pin-gnd  { color: #94a3b8; }
+
+        /* ===== COMPONENTES ===== */
+        .comp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 1rem;
+        }
+        .comp-card {
+            background: #f8fafc;
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 12px;
+            padding: 1.1rem 0.9rem;
+            text-align: center;
+            transition: all 0.25s;
+        }
+        .comp-card:hover {
+            border-color: rgba(37,99,235,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.08);
+        }
+        .comp-icon { font-size: 1.75rem; display: block; margin-bottom: 0.5rem; }
+        .comp-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+        .comp-desc { font-size: 0.74rem; color: #64748b; line-height: 1.55; }
+        .comp-tag {
+            display: inline-block;
+            background: rgba(37,99,235,0.08);
+            color: #2563eb;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.63rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== RANGOS ===== */
+        .rangos-wrap {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+        .rango-item {
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            border: 1px solid;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+        .ri-icon { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+        .ri-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ri-temp  { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700; margin-top: 2px; }
+        .ri-desc  { font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+
+        .rango-alto { background: rgba(220,38,38,0.05);  border-color: rgba(220,38,38,0.2); }
+        .rango-elev { background: rgba(217,119,6,0.05);  border-color: rgba(217,119,6,0.2); }
+        .rango-opt  { background: rgba(5,150,105,0.05);  border-color: rgba(5,150,105,0.2); }
+        .rango-bajo { background: rgba(37,99,235,0.05);  border-color: rgba(37,99,235,0.2); }
+
+        /* ===== NAV CARDS ===== */
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem;
+        }
+        .nav-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            background: #f8fafc;
+            border: 1.5px solid rgba(15,23,42,0.08);
+            border-radius: 14px;
+            padding: 1.2rem 1rem;
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+        .nav-card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 6px 20px rgba(37,99,235,0.1);
+            transform: translateY(-3px);
+        }
+        .nav-card-icon { font-size: 1.6rem; }
+        .nav-card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .nav-card-desc { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
+        .nav-card-arrow { font-size: 0.8rem; color: #2563eb; font-weight: 700; margin-top: auto; }
+
+        @media (max-width: 600px) {
+            .hero { padding: 2rem 1.25rem; }
+            .hero-stats { gap: 1.5rem; }
+            .flujo-item { min-width: 75px; padding: 0.65rem 0.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="img/LOGO2.png" alt="TermosenseLogo" class="header-logo">
+                <h1 class="site-title">TERMOMETRÍA INDUSTRIAL</h1>
+            </div>
+            <nav class="main-nav">
+                <a href="inicio.html"       class="nav-link active">Inicio</a>
+                <a href="dispositivos.html" class="nav-link">Dispositivos</a>
+                <a href="circuito.html"     class="nav-link">Circuito</a>
+                <a href="codificacion.html" class="nav-link">Codificación</a>
+                <a href="analisis.html"     class="nav-link">Análisis</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-wrap">
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-inner">
+                <div class="hero-badge">Sistema en tiempo real · Arduino + MAX6675</div>
+                <h1 class="hero-title">
+                    Monitoreo de<br>
+                    <span>Temperatura Industrial</span>
+                </h1>
+                <p class="hero-desc">
+                    Sistema embebido basado en Arduino UNO que captura, procesa y registra datos de temperatura mediante una termocupla tipo K y el módulo digitalizador MAX6675. Los datos se exportan como CSV y se visualizan en un dashboard interactivo.
+                </p>
+                <div class="hero-stats">
+                    <div class="hstat">
+                        <div class="hstat-val">±0.25°C</div>
+                        <div class="hstat-label">Precisión MAX6675</div>
+                    </div>
+                    <div class="hstat">
+                        <div class="hstat-val">1 Hz</div>
+                        <div class="hstat-label">Frecuencia de muestreo</div>
+                    </div>
+                    <div class="hstat">
+                        <div class="hstat-val">1260°C</div>
+                        <div class="hstat-label">Rango máximo</div>
+                    </div>
+                    <div class="hstat">
+                        <div class="hstat-val">SPI</div>
+                        <div class="hstat-label">Protocolo de comm.</div>
+                    </div>
+                </div>
+                <a href="analisis.html" class="hero-cta">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    VER ANÁLISIS DE DATOS
+                </a>
+            </div>
+        </div>
+
+        <!-- CÓMO FUNCIONA -->
+        <div class="card">
+            <p class="seccion-titulo">Funcionamiento</p>
+            <h2 class="seccion-h2">¿Cómo funciona el sistema?</h2>
+            <div class="pasos">
+                <div class="paso">
+                    <span class="paso-num">01</span>
+                    <span class="paso-icon">🌡️</span>
+                    <h4>Sensor físico</h4>
+                    <p>La termocupla tipo K detecta la temperatura del objeto o ambiente y genera un pequeño voltaje proporcional al calor.</p>
+                </div>
+                <div class="paso">
+                    <span class="paso-num">02</span>
+                    <span class="paso-icon">🔌</span>
+                    <h4>Digitalización</h4>
+                    <p>El módulo MAX6675 amplifica y convierte esa señal analógica en un valor digital de 12 bits con 0.25 °C de resolución.</p>
+                </div>
+                <div class="paso">
+                    <span class="paso-num">03</span>
+                    <span class="paso-icon">📡</span>
+                    <h4>Comunicación SPI</h4>
+                    <p>Arduino UNO lee el dato digital cada segundo usando el protocolo SPI (3 pines: SCLK, CS, SO) y lo procesa.</p>
+                </div>
+                <div class="paso">
+                    <span class="paso-num">04</span>
+                    <span class="paso-icon">💾</span>
+                    <h4>Exportación CSV</h4>
+                    <p>Los datos se envían por el puerto serial y se guardan en un archivo <strong>DATOS.CSV</strong> con fecha, hora y temperatura.</p>
+                </div>
+                <div class="paso">
+                    <span class="paso-num">05</span>
+                    <span class="paso-icon">📊</span>
+                    <h4>Visualización</h4>
+                    <p>Carga el CSV en el Monitor para ver gráficas históricas, estadísticas y alertas de temperatura.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLUJO DE DATOS -->
+        <div class="card">
+            <p class="seccion-titulo">Arquitectura</p>
+            <h2 class="seccion-h2">Flujo de datos del sistema</h2>
+
+            <div class="flujo">
+                <div class="flujo-item">
+                    <span class="flujo-item-icon">🔥</span>
+                    <div class="flujo-item-name">Termocupla K</div>
+                    <div class="flujo-item-desc">Señal µV</div>
+                </div>
+                <div class="flujo-arrow">→</div>
+                <div class="flujo-item">
+                    <span class="flujo-item-icon">🔌</span>
+                    <div class="flujo-item-name">MAX6675</div>
+                    <div class="flujo-item-desc">ADC 12-bit</div>
+                </div>
+                <div class="flujo-arrow">→</div>
+                <div class="flujo-item">
+                    <span class="flujo-item-icon">⚡</span>
+                    <div class="flujo-item-name">Arduino UNO</div>
+                    <div class="flujo-item-desc">Lógica SPI</div>
+                </div>
+                <div class="flujo-arrow">→</div>
+                <div class="flujo-item">
+                    <span class="flujo-item-icon">🖥️</span>
+                    <div class="flujo-item-name">Puerto Serial</div>
+                    <div class="flujo-item-desc">9600 baud</div>
+                </div>
+                <div class="flujo-arrow">→</div>
+                <div class="flujo-item">
+                    <span class="flujo-item-icon">📄</span>
+                    <div class="flujo-item-name">DATOS.CSV</div>
+                    <div class="flujo-item-desc">Fecha, Hora, °C</div>
+                </div>
+                <div class="flujo-arrow">→</div>
+                <div class="flujo-item" style="border-color:rgba(37,99,235,0.4);background:rgba(37,99,235,0.05);">
+                    <span class="flujo-item-icon">📊</span>
+                    <div class="flujo-item-name" style="color:#2563eb;">Dashboard</div>
+                    <div class="flujo-item-desc">Monitor web</div>
+                </div>
+            </div>
+
+            <div class="spi-wrap">
+                <div class="spi-title">// Conexión SPI — MAX6675 → Arduino UNO</div>
+                <div class="spi-pins">
+                    <div class="spi-pin">
+                        <span class="spi-pin-name pin-sclk">SCLK</span>
+                        <span class="spi-pin-desc">Pin 13 · Reloj</span>
+                    </div>
+                    <div class="spi-pin">
+                        <span class="spi-pin-name pin-cs">CS</span>
+                        <span class="spi-pin-desc">Pin 10 · Chip Select</span>
+                    </div>
+                    <div class="spi-pin">
+                        <span class="spi-pin-name pin-so">SO</span>
+                        <span class="spi-pin-desc">Pin 12 · Datos salida</span>
+                    </div>
+                    <div class="spi-pin">
+                        <span class="spi-pin-name pin-vcc">VCC</span>
+                        <span class="spi-pin-desc">5V · Alimentación</span>
+                    </div>
+                    <div class="spi-pin">
+                        <span class="spi-pin-name pin-gnd">GND</span>
+                        <span class="spi-pin-desc">GND · Tierra</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPONENTES -->
+        <div class="card">
+            <p class="seccion-titulo">Hardware</p>
+            <h2 class="seccion-h2">Componentes del sistema</h2>
+            <div class="comp-grid">
+                <div class="comp-card">
+                    <span class="comp-icon">⚡</span>
+                    <div class="comp-name">Arduino UNO</div>
+                    <div class="comp-desc">Microcontrolador ATmega328P. Ejecuta el firmware y coordina la comunicación SPI.</div>
+                    <span class="comp-tag">16 MHz</span>
+                </div>
+                <div class="comp-card">
+                    <span class="comp-icon">🔌</span>
+                    <div class="comp-name">MAX6675</div>
+                    <div class="comp-desc">Módulo digitalizador con compensación de junta fría integrada para termocuplas tipo K.</div>
+                    <span class="comp-tag">12-bit ADC</span>
+                </div>
+                <div class="comp-card">
+                    <span class="comp-icon">🌡️</span>
+                    <div class="comp-name">Termocupla K</div>
+                    <div class="comp-desc">Sonda de acero inoxidable. Genera un voltaje proporcional a la temperatura medida.</div>
+                    <span class="comp-tag">0 – 1260°C</span>
+                </div>
+                <div class="comp-card">
+                    <span class="comp-icon">🔗</span>
+                    <div class="comp-name">Cables Jumper</div>
+                    <div class="comp-desc">Conexiones macho-hembra para unir el módulo MAX6675 con los pines del Arduino.</div>
+                    <span class="comp-tag">M-H / M-M</span>
+                </div>
+                <div class="comp-card">
+                    <span class="comp-icon">🧱</span>
+                    <div class="comp-name">Protoboard</div>
+                    <div class="comp-desc">Base de pruebas sin soldadura para ensamblar y probar el circuito rápidamente.</div>
+                    <span class="comp-tag">830 puntos</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RANGOS -->
+        <div class="card">
+            <p class="seccion-titulo">Semáforo térmico</p>
+            <h2 class="seccion-h2">Rangos de temperatura</h2>
+            <p style="font-size:0.82rem;color:#64748b;margin-bottom:1rem;">El sistema clasifica automáticamente cada medición según estos rangos:</p>
+            <div class="rangos-wrap">
+                <div class="rango-item rango-alto">
+                    <span class="ri-icon">🔴</span>
+                    <div>
+                        <div class="ri-label" style="color:#dc2626;">Alta</div>
+                        <div class="ri-temp" style="color:#dc2626;">≥ 33 °C</div>
+                        <div class="ri-desc">Zona de alerta crítica</div>
+                    </div>
+                </div>
+                <div class="rango-item rango-elev">
+                    <span class="ri-icon">🟡</span>
+                    <div>
+                        <div class="ri-label" style="color:#d97706;">Elevada</div>
+                        <div class="ri-temp" style="color:#d97706;">28 – 32 °C</div>
+                        <div class="ri-desc">Precaución, vigilar</div>
+                    </div>
+                </div>
+                <div class="rango-item rango-opt">
+                    <span class="ri-icon">🟢</span>
+                    <div>
+                        <div class="ri-label" style="color:#059669;">Óptima</div>
+                        <div class="ri-temp" style="color:#059669;">21 – 27 °C</div>
+                        <div class="ri-desc">Rango operativo normal</div>
+                    </div>
+                </div>
+                <div class="rango-item rango-bajo">
+                    <span class="ri-icon">🔵</span>
+                    <div>
+                        <div class="ri-label" style="color:#2563eb;">Baja</div>
+                        <div class="ri-temp" style="color:#2563eb;">≤ 20 °C</div>
+                        <div class="ri-desc">Por debajo del rango</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPLORA EL SITIO -->
+        <div class="card">
+            <p class="seccion-titulo">Navegación</p>
+            <h2 class="seccion-h2">Explora el proyecto</h2>
+            <div class="nav-cards">
+                <a href="dispositivos.html" class="nav-card">
+                    <span class="nav-card-icon">🔩</span>
+                    <div class="nav-card-title">Dispositivos</div>
+                    <div class="nav-card-desc">Inventario fotográfico de todos los componentes utilizados.</div>
+                    <span class="nav-card-arrow">→ Ver</span>
+                </a>
+                <a href="circuito.html" class="nav-card">
+                    <span class="nav-card-icon">🔌</span>
+                    <div class="nav-card-title">Circuito</div>
+                    <div class="nav-card-desc">Diagrama Fritzing y foto del montaje real del prototipo.</div>
+                    <span class="nav-card-arrow">→ Ver</span>
+                </a>
+                <a href="codificacion.html" class="nav-card">
+                    <span class="nav-card-icon">💻</span>
+                    <div class="nav-card-title">Codificación</div>
+                    <div class="nav-card-desc">Código Arduino con la librería MAX6675 para leer y enviar datos.</div>
+                    <span class="nav-card-arrow">→ Ver</span>
+                </a>
+                <a href="analisis.html" class="nav-card">
+                    <span class="nav-card-icon">📈</span>
+                    <div class="nav-card-title">Análisis</div>
+                    <div class="nav-card-desc">Histórico completo, filtros por día y estadísticas detalladas.</div>
+                    <span class="nav-card-arrow">→ Ver</span>
+                </a>
+            </div>
+        </div>
+
+    </div><!-- /page-wrap -->
+</body>
+</html>
